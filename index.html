@@ -1,16 +1,65 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Zdjecia</title>
+  <style>
+    body {
+        margin: 0;
+      }
+      #slider {
+        display: flex;
+      }
+    </style>
 </head>
 
 <body>
+  <div id="slider">
+    <img src="http://picsum.photos/600/400?r=1" alt="" />
+    <img src="http://picsum.photos/600/400?r=2" alt="" />
+    <img src="http://picsum.photos/600/400?r=3" alt="" />
+    <img src="http://picsum.photos/600/400?r=4" alt="" />
+  </div>
+  <script type="text/javascript">
+    const slider = document.querySelector("#slider");
+    // początkowe położenie slidera
+    let polozenie = 0;
+    // szybkość animacji
+    let krok = -2;
+    let czyAnimowac = true;
 
+    slider.addEventListener("mouseover", () => {
+      czyAnimowac = false;
+    });
+
+    slider.addEventListener("mouseout", () => {
+      czyAnimowac = true;
+      animacja();
+    });
+
+    animacja();
+
+    /**
+     * Funkcja animująca slider lewo-prawo
+     */
+    function animacja() {
+      if (polozenie < -slider.scrollWidth + window.innerWidth) {
+        krok = 2;
+      }
+      if (polozenie > 0) {
+        krok = -2;
+      }
+
+      polozenie += krok;
+      slider.style.transform = `translateX(${polozenie}px)`;
+      if (czyAnimowac) {
+        requestAnimationFrame(animacja);
+      }
+    }
+  </script>
 </body>
-<input type="text">
 
 </html>
