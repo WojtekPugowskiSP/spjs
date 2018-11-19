@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 
+        wymagania do aplikacji:
+        1. pozwól użytkownikowi podac miejscowosc
+        2. zapamietaj tę miejscowosc
+        użyj obiektu localStorage. 
+        Zapisywanie:  localStorage.setItem(klucz, wartosc)
+        Odczytywanie: localStorage.getItem(klucz)
+        Zapisuj w JSONIE (JSON.stringify() i JSON.parse())
+        3. zaczytaj pogode dla wszystkich aktualnie zapamietanych miejscowosci
+        wykorzystaj openweathermap (jest w przykładzie w plikach 75- i 76-)
+        4. wyswietl pogodę (chmurki, ikonki ogólnie) - katalog assets
+        5. pozwol usuwac miejscowosc!
+    -->
+    <div id="container">
+        <input type="text" placeholder="Nazwa miasta" id="cityType" />
+        <button type="submit" id="cityButton">Wyślij</button>
+    </div>
+    <script type="text/javascript">
+        document.querySelector('#cityButton').addEventListener('click', weatherCheck);
+
+        function weatherCheck() {
+            const opwApiKey = '50d53005c0fd5f556bb4ef15224c4209'
+            let openWeatherUrl =
+                `http://api.openweathermap.org/data/2.5/weather?q=${cityType.value}&APPID=${opwApiKey}`
+            const weather = fetch(openWeatherUrl)
+            console.log(weather) // PROMISE!
+
+            weather
+                .then((retVal) => {
+                    console.log('First .then', retVal);
+                    return retVal.json()
+                }) // retVal is 'Response' object which is also Promise
+
+
+                .then(retVal => {
+                    console.log('Second .then', retVal)
+                    let localStorageItem = Second.then; 
+                    localStorage.setItem('myWeather', JSON.stringify(localStorageItem));
+                    const retrievedObject = localStorage.getItem('myWeather');
+                    console.log(JSON.parse(retrievedObject));
+                })
+                // catch errors
+                .catch((e) => {
+                    console.error('Catched exception: ', e)
+                })
+
+            // 2. Budowanie własnych Promise()
+            const p = new Promise(
+                (resolve, reject) => {
+                    // Promise może zostać rozwiązana lub odrzucona - nigdy obydwa przypadki
+                    // rozwiązanie Promise: resolve(retVal)
+                    // odrzucenie Promise: reject(retVal)
+                    setTimeout(
+                        () => {
+                            console.log('Promise resolved, but .then not fired..:(')
+                            resolve('Promises are cool!')
+                        }, 2000)
+                    setTimeout(
+                        () => {
+                            console.log('Promise rejected')
+                            // we reject and return Error object - exception
+                            reject(Error('Promises can be rejected'))
+                        }, 1000)
+
+                }
+            )
+            // check
+            p
+                .then(data => console.log(data))
+                .catch(e => console.log(e))
+        }
+
+        // // 3. Chaining - łączenie kolejnych Promise
+        // // przykład - dekorowanie elementu
+        // function addBold(enl) {return new Promise()}
+        // function addItalic(el) {return new Promise()}
+        // function addUnderline(el) {return new Promise()}
+        // function addBackgroud(el,color) {return new Promise()}
+
+
+        // // inny przykład - działanie na dużych tablicach (Array.map, .find, .sort, filter) bez czekania na wynik
+
+        // 4. Wiele Promises(). Promise umożliwia czekanie na wiele innych Promise!
+        // przykład - jak dostaniesz info pogodowe, wypluj posta na fejsa
+        // const fakeWeather = new Promise( 
+        //     (resolve, reject) => {
+        //         setTimeout(
+        //             ()=>{resolve('Sun is shiniiing')}
+        //             ,3000)
+        //     }
+        // )
+
+        // const fakeFB= new Promise( 
+        //     (resolve, reject) => {
+        //         let fb = {sendPost(p) {console.log(`Tom on fejsik says: ${p}`)}}
+        //         setTimeout(
+        //             ()=>{resolve(fb)}
+        //             ,1000)
+        //     }
+        // )
+
+        // używamy metody statycznej .all obiektu Promise. 
+        // .all zwraca... Promise;)
+        // Promise
+        //     .all([fakeWeather,fakeFB])
+        //     .then( 
+        //         responses=> {
+        //             // kolejność w tablicy jest taka sama, jak kolejność Promise w .all([])
+        //             // console.log('Multpile Promises resolved', responses)
+        //             const [weather, fb] = responses
+        //             fb.sendPost(weather)
+        //         }
+        //     )
+    </script>
+</body>
+
+</html>
